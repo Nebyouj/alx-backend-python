@@ -1,6 +1,10 @@
 import sqlite3
 
 class DatabaseConnection:
+    def __init__(self):
+        self.conn = None
+        self.cursor = None
+        
     def __enter__(self):
         self.conn = sqlite3.connect("users.db")
         self.cursor = self.conn.cursor()
