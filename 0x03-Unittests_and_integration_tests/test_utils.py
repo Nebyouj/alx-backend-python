@@ -6,7 +6,7 @@ and verifies correct behavior under both unit and integration scenarios.
 """
 
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import PropertyMock, patch, Mock
 from parameterized import parameterized, parameterized_class
 from utils import access_nested_map, get_json, memoize
 from client import GithubOrgClient
@@ -90,12 +90,13 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(client.org, expected)
         mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
 
-    def test_public_repos_url(self) -> None:
+    def test_public_repos_url(self):
         """Test that the _public_repos_url property returns correct URL."""
-        with patch.object(GithubOrgClient, 'org', new_callable=Mock) as mock_org:
+        with patch.object(GithubOrgClient, 'org', new_callable=PropertyMock) as mock_org:
             mock_org.return_value = {"repos_url": "https://api.github.com/orgs/test/repos"}
             client = GithubOrgClient("test")
             self.assertEqual(client._public_repos_url, "https://api.github.com/orgs/test/repos")
+
 
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json: Mock) -> None:
@@ -104,12 +105,13 @@ class TestGithubOrgClient(unittest.TestCase):
             {"name": "repo1", "license": {"key": "apache-2.0"}},
             {"name": "repo2", "license": {"key": "mit"}},
         ]
-        with patch.object(GithubOrgClient, "_public_repos_url", new_callable=Mock) as mock_url:
+        with patch.object(GithubOrgClient, "_public_repos_url", new_callable=PropertyMock) as mock_url:
             mock_url.return_value = "dummy_url"
             client = GithubOrgClient("test")
             self.assertEqual(client.public_repos(), ["repo1", "repo2"])
             mock_url.assert_called_once()
             mock_get_json.assert_called_once_with("dummy_url")
+
 
     @parameterized.expand([
         ("has_license", {"license": {"key": "my_license"}}, "my_license", True),
