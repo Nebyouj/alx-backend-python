@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, Conversation, Message
+from rest_framework.serializers import CharField, SerializerMethodField, ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
