@@ -1,6 +1,12 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, filters
+from .models import Conversation, Message
+from .serializers import ConversationSerializer, MessageSerializer
+
+
+
 from .models import Conversation, Message
 from .serializers import (
     ConversationSerializer,
@@ -8,10 +14,11 @@ from .serializers import (
     MessageSerializer,
     MessageCreateSerializer,
 )
-
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'participants__username']
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -28,6 +35,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['content', 'sender__username']
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
