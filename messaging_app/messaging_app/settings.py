@@ -81,6 +81,16 @@ DATABASES = {
     }
 }
 
+# DRF global settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Require auth by default
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # Enable session-based auth
+        'rest_framework.authentication.BasicAuthentication',    # Optional: basic auth
+    ],
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
