@@ -65,12 +65,10 @@ class TestMemoize(unittest.TestCase):
 
         class TestClass:
             def a_method(self) -> int:
-                """Returns constant integer."""
                 return 42
 
             @memoize
             def a_property(self) -> int:
-                """Returns result of a_method via memoization."""
                 return self.a_method()
 
         with patch.object(TestClass, "a_method") as mock_method:
@@ -121,7 +119,8 @@ class TestGithubOrgClient(unittest.TestCase):
             {"name": "repo2", "license": {"key": "mit"}},
         ]
         with patch.object(
-            GithubOrgClient, "_public_repos_url", new_callable=PropertyMock
+            GithubOrgClient, "_public_repos_url",
+            new_callable=PropertyMock
         ) as mock_url:
             mock_url.return_value = "dummy_url"
             client = GithubOrgClient("test")
@@ -130,14 +129,19 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_get_json.assert_called_once_with("dummy_url")
 
     @parameterized.expand([
-        ("has_license", {"license": {"key": "my_license"}}, "my_license", True),
-        ("no_license", {"license": {"key": "other_license"}}, "my_license", False),
+        ("has_license", {"license": {"key": "my_license"}},
+         "my_license", True),
+        ("no_license", {"license": {"key": "other_license"}},
+         "my_license", False),
     ])
     def test_has_license(
-        self, name: str, repo: dict, license_key: str, expected: bool
+        self, name: str, repo: dict,
+        license_key: str, expected: bool
     ) -> None:
         """Test has_license returns True if repo has specified license."""
-        self.assertEqual(GithubOrgClient.has_license(repo, license_key), expected)
+        self.assertEqual(
+            GithubOrgClient.has_license(repo, license_key), expected
+        )
 
 
 @parameterized_class(
@@ -177,3 +181,4 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
+        
