@@ -51,7 +51,7 @@ class TestGetJson(unittest.TestCase):
     def test_get_json(
         self, test_url: str, test_payload: dict, mock_get: Mock
     ) -> None:
-        """Test that get_json returns correct payload using mocked requests.get."""
+        """Test get_json returns correct payload using mocked requests.get."""
         mock_get.return_value = Mock(json=Mock(return_value=test_payload))
         self.assertEqual(get_json(test_url), test_payload)
         mock_get.assert_called_once_with(test_url)
