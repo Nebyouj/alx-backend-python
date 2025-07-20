@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, Conversation, Message
-from rest_framework.serializers import CharField, SerializerMethodField, ValidationError
+from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -22,7 +22,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
-    title = CharField()  # Using CharField
+    title = serializers.CharField()  # Using CharField
 
     class Meta:
         model = Conversation
@@ -30,7 +30,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def validate_title(self, value):  # Using ValidationError
         if not value:
-            raise ValidationError("Title cannot be empty")
+            raise serializers.ValidationError("Title cannot be empty")
         return value
 
 
