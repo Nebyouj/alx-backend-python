@@ -1,0 +1,19 @@
+🧪 Test Cases to Run:
+POST /api/token/ — Login and retrieve JWT token
+
+POST /conversations/ — Create a conversation (authenticated)
+
+POST /messages/ — Send a message to a conversation
+
+GET /messages/?user=...&start=...&end=... — Filter messages
+
+Check Unauthorized access — Try without token, should fail with 401
+
+Refresh token — /api/token/refresh/
+
+✅ Ensure Postman headers include:
+
+http
+Copy code
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
