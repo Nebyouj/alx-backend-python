@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters
+from rest_framework.exceptions import APIException
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .filters import MessageFilter
@@ -55,9 +57,6 @@ class MessageViewSet(viewsets.ModelViewSet):
 
        
         if self.request.user not in conversation.participants.all():
-            from rest_framework.response import Response
-            from rest_framework import status
-            return Message.objects.none()  # or raise PermissionDenied("Not a participant.")
-
+            raise APIException(detail="You are not a participant in this conversation.", code=HTTP_403_FORBIDDEN)
         return Message.objects.filter(conversation=conversation)
 
