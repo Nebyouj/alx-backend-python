@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -34,7 +35,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsAuthenticated,IsParticipantOfConversation]
     filter_backends = [filters.SearchFilter]
     filterset_class = MessageFilter
     search_fields = ['content', 'sender__username']
@@ -46,4 +47,17 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)
+    
+    def get_queryset(self):
+       
+        conversation_id = self.kwargs['conversation_pk']
+        conversation = get_object_or_404(Conversation, pk=conversation_id)
+
+       
+        if self.request.user not in conversation.participants.all():
+            from rest_framework.response import Response
+            from rest_framework import status
+            return Message.objects.none()  # or raise PermissionDenied("Not a participant.")
+
+        return Message.objects.filter(conversation=conversation)
 
