@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'chats',
+    'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -87,9 +89,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Require auth by default
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',  # Enable session-based auth
-        'rest_framework.authentication.BasicAuthentication',    # Optional: basic auth
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'messaging_app.chats.pagination.CustomPagination',
+    'PAGE_SIZE': 20,
 }
 
 # Password validation

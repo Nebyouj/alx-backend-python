@@ -4,9 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
+from .filters import MessageFilter
 
-
-
+from .permissions import IsParticipantOfConversation
 from .models import Conversation, Message
 from .serializers import (
     ConversationSerializer,
@@ -16,7 +16,7 @@ from .serializers import (
 )
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsParticipantOfConversation]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'participants__username']
 
@@ -34,8 +34,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsParticipantOfConversation]
     filter_backends = [filters.SearchFilter]
+    filterset_class = MessageFilter
     search_fields = ['content', 'sender__username']
 
     def get_serializer_class(self):
