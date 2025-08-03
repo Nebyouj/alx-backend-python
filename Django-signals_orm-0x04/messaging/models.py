@@ -1,12 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from alx_travel_app_0x00.alx_travel_app.alx_travel_app import settings
-
-class UnreadMessagesManager(models.Manager):
-    def for_user(self, user):
-        return self.filter(receiver=user, read=False).only('sender', 'content', 'timestamp')
-
+from .managers import UnreadMessagesManager
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')

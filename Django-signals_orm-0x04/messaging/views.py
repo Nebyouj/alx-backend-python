@@ -65,3 +65,20 @@ def conversation_thread_view(request, message_id):
 
     data = get_replies_recursive(message)
     return JsonResponse(data, safe=False)
+
+
+@login_required
+def unread_messages_view(request):
+    """Display only unread messages for the logged-in user."""
+    unread_msgs = Message.unread.unread_for_user(request.user).only('id', 'sender', 'content', 'timestamp')
+    
+    data = [
+        {
+            "id": msg.id,
+            "sender": msg.sender.username,
+            "content": msg.content,
+            "timestamp": msg.timestamp,
+        }
+        for msg in unread_msgs
+    ]
+    return JsonResponse(data, safe=False)
