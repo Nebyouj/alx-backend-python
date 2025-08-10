@@ -19,10 +19,10 @@ services:
 
   web:
     build:
-      context: .
+      context: python3 manage.py runserver.
       dockerfile: messaging_app/Dockerfile
     container_name: messaging_web
-    command: python manage.py runserver 
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
@@ -31,6 +31,7 @@ services:
       - db
     env_file:
       - .env
+    
 
 volumes:
   db_data:
