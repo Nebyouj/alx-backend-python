@@ -20,3 +20,8 @@ EXPOSE 8000
 
 # Start server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# To build the Docker image, run:
+# docker build -t my-django-app .
+docker run -p 8000:8000 my-django-app
+
