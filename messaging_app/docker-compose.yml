@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: messaging_app/Dockerfile
     container_name: messaging_web
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 
     volumes:
       - .:/app
     ports:
