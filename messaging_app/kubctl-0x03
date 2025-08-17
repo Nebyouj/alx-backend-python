@@ -1,0 +1,19 @@
+#!/bin/bash
+# Rolling update script
+
+set -e
+
+echo ">>> Applying rolling update..."
+kubectl apply -f messaging_app/blue_deployment.yaml
+
+echo ">>> Monitoring rollout..."
+kubectl rollout status deployment/django-blue
+
+echo ">>> Testing downtime with curl..."
+for i in {1..20}; do
+  curl -s http://$(minikube ip):$(kubectl get svc django-bluegreen-service -o=jsonpath='{.spec.ports[0].nodePort}')/api || echo "Request failed"
+  sleep 2
+done
+
+echo ">>> Verifying pods..."
+kubectl get pods -l app=django-blue
